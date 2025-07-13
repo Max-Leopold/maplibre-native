@@ -3,50 +3,99 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>iOS - MapLibre Native Developer Documentation</title>
+        <title>Linux - MapLibre Native Developer Documentation</title>
 
 
         <!-- Custom HTML head -->
+        <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.6.0/+esm';
+        
+        const darkThemes = ['ayu', 'navy', 'coal'];
+        const lightThemes = ['light', 'rust'];
+        
+        const classList = document.getElementsByTagName('html')[0].classList;
+        
+        let lastThemeWasLight = true;
+        for (const cssClass of classList) {
+            if (darkThemes.includes(cssClass)) {
+                lastThemeWasLight = false;
+                break;
+            }
+        }
+        
+        const theme = lastThemeWasLight ? 'default' : 'dark';
+        mermaid.initialize({ startOnLoad: true, theme });
+        
+        // Simplest way to make mermaid re-render the diagrams in the new theme is via refreshing the page
+        
+        for (const darkTheme of darkThemes) {
+            document.getElementById(darkTheme).addEventListener('click', () => {
+                if (lastThemeWasLight) {
+                    window.location.reload();
+                }
+            });
+        }
+        
+        for (const lightTheme of lightThemes) {
+            document.getElementById(lightTheme).addEventListener('click', () => {
+                if (!lastThemeWasLight) {
+                    window.location.reload();
+                }
+            });
+        }
+        </script>
 
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon.svg">
-        <link rel="shortcut icon" href="../favicon.png">
-        <link rel="stylesheet" href="../css/variables.css">
-        <link rel="stylesheet" href="../css/general.css">
-        <link rel="stylesheet" href="../css/chrome.css">
-        <link rel="stylesheet" href="../css/print.css" media="print">
+        <link rel="icon" href="../../favicon.svg">
+        <link rel="shortcut icon" href="../../favicon.png">
+        <link rel="stylesheet" href="../../css/variables.css">
+        <link rel="stylesheet" href="../../css/general.css">
+        <link rel="stylesheet" href="../../css/chrome.css">
+        <link rel="stylesheet" href="../../css/print.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
-        <link rel="stylesheet" href="../fonts/fonts.css">
+        <link rel="stylesheet" href="../../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../../fonts/fonts.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="highlight-css" href="../highlight.css">
-        <link rel="stylesheet" id="tomorrow-night-css" href="../tomorrow-night.css">
-        <link rel="stylesheet" id="ayu-highlight-css" href="../ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="../../highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="../../tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="../../ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        <link rel="stylesheet" href="../diff.css">
+        <link rel="stylesheet" href="../../diff.css">
 
 
-        <!-- Provide site root to javascript -->
+        <!-- Provide site root and default themes to javascript -->
         <script>
-            var path_to_root = "../";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+            const path_to_root = "../../";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc.js"></script>
+        <script src="../../toc.js"></script>
     </head>
     <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
     <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
         <script>
             try {
-                var theme = localStorage.getItem('mdbook-theme');
-                var sidebar = localStorage.getItem('mdbook-sidebar');
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -60,7 +109,8 @@
 
         <!-- Set the theme before any content is loaded, prevents flash -->
         <script>
-            var theme;
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
             const html = document.documentElement;
@@ -73,8 +123,8 @@
 
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
-            var sidebar = null;
-            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
@@ -90,7 +140,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
             </noscript>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -110,13 +160,14 @@
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
                             <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
                         </ul>
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
@@ -124,7 +175,7 @@
                     <h1 class="menu-title">MapLibre Native Developer Documentation</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
 
@@ -220,70 +271,90 @@
 }
 
 </style>
-<h1 id="maplibre-ios-developer-guide"><a class="header" href="#maplibre-ios-developer-guide">MapLibre iOS Developer Guide</a></h1>
-<h2 id="bazel"><a class="header" href="#bazel">Bazel</a></h2>
-<p><a href="https://bazel.build/">Bazel</a> is used for building on iOS.</p>
-<p>You can generate an Xcode project thanks to <a href="https://github.com/MobileNativeFoundation/rules_xcodeproj">rules_xcodeproj</a> intergration.</p>
-<p>You need to install <a href="https://github.com/bazelbuild/bazelisk">bazelisk</a>, which is a wrapper around Bazel which ensures that the version specified in <code>.bazelversion</code> is used.</p>
-<pre><code>brew install bazelisk
+<h1 id="linux"><a class="header" href="#linux">Linux</a></h1>
+<p>This guide explains how to get started building and running MapLibre Native on Linux. The guide focusses on a Ubuntu 22.04 or later. The build process should give you a set of <code>.a</code> files that you can use to include MapLibre Native in other C++ projects, as well as a set of executables that you can run to render map tile images and test the project.</p>
+<h2 id="clone-the-repo"><a class="header" href="#clone-the-repo">Clone the repo</a></h2>
+<p>First, clone the repository. This repository uses <a href="https://git-scm.com/book/en/v2/Git-Tools-Submodules">git submodules</a>, that are required to build the project.</p>
+<pre><code class="language-bash">git clone --recurse-submodules -j8 https://github.com/maplibre/maplibre-native.git
+cd maplibre-native
 </code></pre>
-<h3 id="creating-configbzl"><a class="header" href="#creating-configbzl">Creating <code>config.bzl</code></a></h3>
-<p>Configure Bazel, otherwise the default config will get used.</p>
-<pre><code>cp platform/darwin/bazel/example_config.bzl platform/darwin/bazel/config.bzl
+<h2 id="requirements"><a class="header" href="#requirements">Requirements</a></h2>
+<pre><code class="language-bash"># Install build tools
+apt install build-essential clang cmake ccache ninja-build pkg-config
+
+# Install system dependencies
+apt install libcurl4-openssl-dev libglfw3-dev libuv1-dev libpng-dev libicu-dev libjpeg-turbo8-dev libwebp-dev xvfb
 </code></pre>
-<p>You need to set your <code>BUNDLE_ID_PREFIX</code> to be unique (ideally use a domain that you own in reverse domain name notation).</p>
-<p>You can keep leave the <code>APPLE_MOBILE_PROVISIONING_PROFILE_NAME</code> alone.</p>
-<p>Set the Team ID to the Team ID of your Apple Developer Account (paid or unpaid both work). If you do not know your Team ID, go to your <a href="https://developer.apple.com/account">Apple Developer account</a>, log in, and scroll down to find your Team ID.</p>
-<p>If you don't already have a developer account, continue this guide and let Xcode generate a provisioning profile for you. You will need to update the Team ID later once a certificate is generated.</p>
-<h2 id="create-the-xcode-project"><a class="header" href="#create-the-xcode-project">Create the Xcode Project</a></h2>
-<p>Run the following commands:</p>
-<pre><code>bazel run //platform/ios:xcodeproj --@rules_xcodeproj//xcodeproj:extra_common_flags="--//:renderer=metal"
-xed platform/ios/MapLibre.xcodeproj
+<p>Optional: <code>libsqlite3-dev</code> (when not found will use SQLite as vendored dependency).</p>
+<p>When using Wayland (now default for <code>linux-opengl</code> preset): <code>libegl1-mesa-dev</code>.</p>
+<h2 id="build-with-cmake"><a class="header" href="#build-with-cmake">Build with CMake</a></h2>
+<pre><code class="language-bash">cmake --preset linux-opengl
+cmake --build build-linux-opengl --target mbgl-render
 </code></pre>
-<p>Then once in Xcode, click on "MapLibre" on the left, then "App" under Targets, then "Signing &amp; Capabilities" in the tabbed menu.
-Confirm that no errors are shown.</p>
-<img width="921" alt="image" src="https://github.com/polvi/maplibre-native/assets/649392/a1ef30cb-97fc-429a-acee-194436f3fb8a">
-<p>Try to run the example App in the simulator and on a device to confirm your setup works.</p>
-<div class="mdbook-alerts mdbook-alerts-important">
+<h2 id="running-mbgl-render"><a class="header" href="#running-mbgl-render">Running <code>mbgl-render</code></a></h2>
+<p>Running <code>mbgl-render --style https://raw.githubusercontent.com/maplibre/demotiles/gh-pages/style.json</code> should produce a map tile image with the default MapLibre styling from <a href="https://maplibre.org/">the MapLibre demo</a>.</p>
+<p><img src="images/sample-maplibre-style-mbgl-render-out.png" alt="Sample image of world from mbgl-render command" /></p>
+<pre><code class="language-bash">./build-linux-opengl/bin/mbgl-render --style https://raw.githubusercontent.com/maplibre/demotiles/gh-pages/style.json --output out.png
+xdg-open out.png
+</code></pre>
+<h3 id="headless-rendering"><a class="header" href="#headless-rendering">Headless rendering</a></h3>
+<p>If you run <code>mbgl-render</code> inside a Docker or on a remote headless server, you will likely get this error because there is no X server running in the container.</p>
+<blockquote>
+<p><code>Error: Failed to open X display.</code></p>
+</blockquote>
+<p>You'll need to simulate an X server to do any rendering. Install <code>xvfb</code> and <code>xauth</code> and run the following command:</p>
+<pre><code class="language-bash">xvfb-run -a ./build-linux-opengl/bin/mbgl-render --style https://raw.githubusercontent.com/maplibre/demotiles/gh-pages/style.json --output out.png
+</code></pre>
+<h3 id="using-your-own-styletiles"><a class="header" href="#using-your-own-styletiles">Using your own style/tiles</a></h3>
+<p>You can also use the <code>mbgl-render</code> command to render images from your own style or tile set. To do so, you will need a data source and a style JSON file.</p>
+<p>For the purposes of this exercise, you can use the <code>zurich_switzerland.mbtiles</code> from <a href="https://github.com/acalcutt/tileserver-gl/releases/download/test_data/zurich_switzerland.mbtiles">here</a>, and <a href="https://gist.github.com/louwers/d7607270cbd6e3faa05222a09bcb8f7d">this</a> following <code>style.json</code> file. Download both by running the commands below.</p>
+<pre><code>wget https://github.com/acalcutt/tileserver-gl/releases/download/test_data/zurich_switzerland.mbtiles
+wget https://gist.githubusercontent.com/louwers/d7607270cbd6e3faa05222a09bcb8f7d/raw/4e9532e1760717865df8aeff08f9bcf100f9e8c4/style.json
+</code></pre>
+<p>Note that this style is totally inadequate for any real use beyond testing your custom setup. Replace the source URL <code>mbtiles:///path/to/zurich_switzerland.mbtiles</code> with the actual path to your <code>.mbtiles</code> file. You can use this command if you downloaded both files to the working directory:</p>
+<pre><code class="language-bash">sed -i "s#/path/to#$PWD#" style.json
+</code></pre>
+<p>Next, run the following command.</p>
+<pre><code class="language-bash">./build-linux-opengl/bin/mbgl-render --style style.json --output out.png
+</code></pre>
+<p>This should produce an <code>out.png</code> image in your current directory with a barebones image of the world.</p>
+<p><img src="images/sample-barebones-mbgl-render-out.png" alt="Sample image of world from mbgl-render command" /></p>
+<h3 id="running-the-render-tests"><a class="header" href="#running-the-render-tests">Running the render tests</a></h3>
+<div class="mdbook-alerts mdbook-alerts-tip">
 <p class="mdbook-alerts-title">
   <span class="mdbook-alerts-icon"></span>
-  important
+  tip
 </p>
-<p>The Bazel configuration files are the source of truth of the build configuration. All changes to the build settings need to be done through Bazel, not in Xcode.</p>
+<p>For more information on the render tests see the <a href="../../render-tests.html">dedicated Render Tests article</a>.</p>
 </div>
-<h3 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h3>
-<h4 id="provisioning-profiles"><a class="header" href="#provisioning-profiles">Provisioning Profiles</a></h4>
-<p>If you get a Python <code>KeyError</code> when processing provisioning profiles, you probably have some <em>really</em> old or corrupted profiles.</p>
-<p>Have a look through <code>~/Library/MobileDevice/Provisioning\ Profiles</code> and remove any expired profiles. Removing all profiles here can also resolve some issues.</p>
-<h4 id="cleaning-bazel-environments"><a class="header" href="#cleaning-bazel-environments">Cleaning Bazel environments</a></h4>
-<p>You should almost never have to do this, but sometimes problems can be solved with:</p>
-<pre><code>bazel clean --expunge
+<p>To check that the output of the rendering is correct, we compare actual rendered PNGs for simple styles with expected PNGs. The content of the tests used to be stored in the MapLibre GL JS repository, which means that GL JS and Native are mostly pixel-identical in their rendering.</p>
+<p>The directory structure of the render tests looks like:</p>
+<pre><code>metrics/
+  integration/
+    render-tests/
+      &lt;name-of-style-spec-feature&gt;/
+        &lt;name-of-feature-value&gt;/
+          expected.png
+          style.json
 </code></pre>
-<h2 id="using-bazel-from-the-command-line"><a class="header" href="#using-bazel-from-the-command-line">Using Bazel from the Command Line</a></h2>
-<p>It is also possible to build and run the test application in a simulator from the command line without opening Xcode.</p>
-<pre><code>bazel run //platform/ios:App --//:renderer=metal
+<p>After the render test run, the folder will also contain an <code>actual.png</code> file and a <code>diff.png</code> which is the difference between the expected and the actual image. There is a pixel difference threshold value which is used to decide if a render test passed or failed.</p>
+<p>Run all render tests with:</p>
+<pre><code>./build-linux-opengl/mbgl-render-test-runner --manifestPath metrics/linux-clang8-release-style.json
 </code></pre>
-<p>You can also build targets from the command line. For example, if you want to build your own XCFramework, see the 'Build XCFramework' step in the <a href="../../.github/workflows/ios-ci.yml">iOS CI workflow</a>.</p>
-<h2 id="cmake"><a class="header" href="#cmake">CMake</a></h2>
-<p>It is also possible to generate an Xcode project using CMake. As of February 2025, targets <code>mbgl-core</code>, <code>ios-sdk-static</code> and <code>app</code> (Objective-C development app) are supported.</p>
-<pre><code>cmake --preset ios -DDEVELOPMENT_TEAM_ID=YOUR_TEAM_ID
-xed build-ios/MapLibre\ Native.xcodeproj
+<p>Or a single test with:</p>
+<pre><code>./build-linux-opengl/mbgl-render-test-runner --manifestPath metrics/linux-clang8-release-style.json --filter "render-tests/fill-visibility/visible"
 </code></pre>
-<h2 id="distribution"><a class="header" href="#distribution">Distribution</a></h2>
-<p>MapLibre iOS is distributed as an XCFramework via the <a href="https://github.com/maplibre/maplibre-gl-native-distribution">maplibre/maplibre-gl-native-distribution</a> repository. See <a href="./release.html">Release MapLibre iOS</a> for the release process. Refer to the <a href="https://github.com/maplibre/maplibre-native/blob/main/.github/workflows/ios-ci.yml"><code>ios-ci.yml</code></a> workflow for an up-to-date recipe for building an XCFramework. As of February 2025 we use:</p>
-<pre><code>bazel build --compilation_mode=opt --features=dead_strip,thin_lto --objc_enable_binary_stripping \
-  --apple_generate_dsym --output_groups=+dsyms --//:renderer=metal //platform/ios:MapLibre.dynamic --embed_label=maplibre_ios_"$(cat VERSION)"
-</code></pre>
+<p>The render test results are summarized in a HTML website located next to the manifest file. For example, running <code>metrics/linux-clang8-release-style.json</code> produces a summary at <code>metrics/linux-clang8-release-style.html</code>.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../android/release.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../../platforms/macos/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../ios/ios-tests.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../../platforms/linux/using-docker.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -293,11 +364,11 @@ xed build-ios/MapLibre\ Native.xcodeproj
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../android/release.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../../platforms/macos/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../ios/ios-tests.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../../platforms/linux/using-docker.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
@@ -312,13 +383,13 @@ xed build-ios/MapLibre\ Native.xcodeproj
         </script>
 
 
-        <script src="../elasticlunr.min.js"></script>
-        <script src="../mark.min.js"></script>
-        <script src="../searcher.js"></script>
+        <script src="../../elasticlunr.min.js"></script>
+        <script src="../../mark.min.js"></script>
+        <script src="../../searcher.js"></script>
 
-        <script src="../clipboard.min.js"></script>
-        <script src="../highlight.js"></script>
-        <script src="../book.js"></script>
+        <script src="../../clipboard.min.js"></script>
+        <script src="../../highlight.js"></script>
+        <script src="../../book.js"></script>
 
         <!-- Custom JS scripts -->
 
